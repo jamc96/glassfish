@@ -7,12 +7,12 @@
 # @example
 #   include glassfish::install
 class glassfish::install(
-  $package_ensure  = $::mariadb::use_package_ensure,
-  $package_name    = $::mariadb::use_package_name,
-  $package_type    = $::mariadb::package_type,
-  $package_source  = $::mariadb::package_source,
-  $package_path    = $::mariadb::use_config_path,
-  $package_version = $::mariadb::use_version,
+  $package_ensure  = $::glassfish::use_package_ensure,
+  $package_name    = $::glassfish::use_package_name,
+  $package_type    = $::glassfish::package_type,
+  $package_source  = $::glassfish::package_source,
+  $package_path    = $::glassfish::use_config_path,
+  $package_version = $::glassfish::use_version,
 ) {
   case $package_type{
     'zip': {
