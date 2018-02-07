@@ -11,25 +11,26 @@ class glassfish::install(
   $package_name     = $::glassfish::use_package_name,
   $package_provider = $::glassfish::use_package_provider,
   $package_source   = $::glassfish::use_package_source,
-  $package_path     = $::glassfish::use_config_path,
-  $package_version  = $::glassfish::use_version,
+  $package_type     = $::glassfish::package_type,
+  $config_ensure    = $::glassfish::use_config_ensure,
+  $config_path      = $::glassfish::use_config_path,
 ) {
   #archive module is used to download and extract the installer
   include ::archive
 
-  file { 'glassfish_config':
-    ensure => directory,
-    path   => $package_path,
+  package { 'glassfish_provider':
+    ensure => $package_ensure,
+    name   => $package_provider,
   }
-  Archive {
-    provider => $package_provider,
+  file { 'glassfish_config' :
+    ensure  => $config_ensure,
+    path    => $config_path,
+    require => Package['glassfish_provider'],
   }
-  archive { $package_name:
-    path         => "/tmp/${package_name}",
-    source       => $package_source,
-    extract      => true,
-    extract_path => "${package_path}/",
-    cleanup      => true,
-    require      => File[$package_path],
+  archive { $package_name :
+    ensure    => $package_ensure,
+    url       => $package_source,
+    target    => $config_path,
+    extension => $package_type,
   }
 }

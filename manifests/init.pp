@@ -21,6 +21,10 @@ class glassfish(
     undef    => '4.1',
     default  => $version,
   }
+  $use_config_ensure = $config_ensure ? {
+    'present' => 'directory',
+    default   => $config_ensure,
+  }
   $use_config_path = $config_path ? {
     undef   => "/opt/glassfish-${use_version}",
     default => $config_path,
