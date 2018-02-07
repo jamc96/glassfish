@@ -9,9 +9,9 @@
 class glassfish(
   Optional[Pattern[/latest|^[.+_0-9:~-]+$/]] $version = undef,
   Pattern[/present|absent/] $package_ensure = 'present',
-  Pattern[/zip|tar.gz|rpm/] $package_type   = 'zip',
+  Pattern[/zip|tar.gz/] $package_type       = 'zip',
   Optional[String] $package_name            = undef,
-  String $package_source                    = 'http://download.oracle.com/glassfish',
+  Optional[String] $package_source          = undef,
   Pattern[/present|absent/] $config_ensure  = 'present',
   Optional[String] $config_path             = undef,
   ) {
@@ -26,9 +26,17 @@ class glassfish(
     default => $config_path,
   }
   $use_package_name = $package_name ? {
-    undef   => "glassfish${version}.${package_type}",
+    undef   => "glassfish-${use_version}.${package_type}",
     default => $package_name,
   }
-
+  $use_package_source = $package_source ? {
+    undef   => "http://download.oracle.com/glassfish/${use_version}/release/${use_package_name}",
+    default => $package_source,
+  }
+  $use_package_provider = $package_type ? {
+    'zip'    => 'unzip',
+    'tar.gz' => 'tar',
+    default  => $package_type,
+  }
   class { '::glassfish::install': } -> Class['::glassfish']
 }

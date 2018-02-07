@@ -7,39 +7,29 @@
 # @example
 #   include glassfish::install
 class glassfish::install(
-  $package_ensure  = $::glassfish::use_package_ensure,
-  $package_name    = $::glassfish::use_package_name,
-  $package_type    = $::glassfish::package_type,
-  $package_source  = $::glassfish::package_source,
-  $package_path    = $::glassfish::use_config_path,
-  $package_version = $::glassfish::use_version,
+  $package_ensure   = $::glassfish::use_package_ensure,
+  $package_name     = $::glassfish::use_package_name,
+  $package_provider = $::glassfish::use_package_provider,
+  $package_source   = $::glassfish::use_package_source,
+  $package_path     = $::glassfish::use_config_path,
+  $package_version  = $::glassfish::use_version,
 ) {
-  case $package_type{
-    'zip': {
-      $install_command = "unzip ${package_name}"
-    }
-    'rpm': {
-      $install_command = "rpm --force -iv ${package_name}"
-    }
-    default: {
-      $install_command = "unzip ${package_name}"
-    }
-  }
+  #archive module is used to download and extract the installer
+  include ::archive
+
   file { 'glassfish_config':
     ensure => directory,
     path   => $package_path,
   }
-  file { 'glassfish_installer':
-    ensure  => file,
-    source  => $package_source,
-    path    => "/tmp/${package_name}",
-    require => File['glassfish_config'],
+  Archive {
+    provider => $package_provider,
   }
-  exec { "Install Glassfish version ${package_version}":
-    path    => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
-    command => $install_command,
-    creates => $package_path,
-    cwd     => '/tmp/',
-    require => File['glassfish_installer'],
+  archive { $package_name:
+    path         => "/tmp/${package_name}",
+    source       => $package_source,
+    extract      => true,
+    extract_path => "${package_path}/",
+    cleanup      => true,
+    require      => File[$package_path],
   }
 }
