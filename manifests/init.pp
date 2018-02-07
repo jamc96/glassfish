@@ -7,7 +7,7 @@
 # @example
 #   include glassfish
 class glassfish(
-  Optional[Pattern[/latest|^[.+_0-9:~-]+$/]] $version = undef,
+  Pattern[/latest|^[.+_0-9:~-]+$/] $version = '4.1',
   Pattern[/present|absent/] $package_ensure = 'present',
   Pattern[/zip|tar.gz/] $package_type       = 'zip',
   Optional[String] $package_name            = undef,
@@ -17,8 +17,7 @@ class glassfish(
   ) {
 # Global variables
   $use_version = $version ? {
-    'latest' => '5.0.1',
-    undef    => '4.1',
+    'latest' => '5.0',
     default  => $version,
   }
   $use_config_ensure = $config_ensure ? {
