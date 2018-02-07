@@ -37,10 +37,5 @@ class glassfish(
     undef   => "http://download.oracle.com/glassfish/${use_version}/release/${use_package_name}",
     default => $package_source,
   }
-  $use_package_provider = $package_type ? {
-    'zip'    => 'unzip',
-    'tar.gz' => 'tar',
-    default  => $package_type,
-  }
   class { '::glassfish::install': } -> Class['::glassfish']
 }
