@@ -29,7 +29,7 @@ define glassfish::asadmin_users(
     exec { 'change_master_password':
       command     => "asadmin change-master-password --passwordfile=${passfile_path} --savemasterpassword",
       refreshonly => true,
-      suscribe    => File['passfile'],
+      creates     => File['passfile'],
     }
 
     if $as_admin_user{
