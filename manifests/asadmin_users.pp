@@ -29,7 +29,8 @@ define glassfish::asadmin_users(
     exec { 'change_master_password':
       command     => "asadmin change-master-password --passwordfile=${passfile_path} --savemasterpassword",
       refreshonly => true,
-      creates     => File['passfile'],
+      creates     => $passfile_path,
+      cwd         => $asadmin_path,
     }
 
     if $as_admin_user{

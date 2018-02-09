@@ -41,7 +41,7 @@ class glassfish(
     default => $package_source,
   }
   $config_v = regsubst($use_version,'^(\d+)(\.(\d+)\.(\d+)|\.(\d+))$','\1')
-  $asadmin_path = "${use_config_path}/${config_v}/bin"
+  $asadmin_path = "${use_config_path}/glassfish${config_v}/bin"
 
   # Create admin and master users by default
   ::glassfish::asadmin_users { 'default':
