@@ -17,7 +17,7 @@ class glassfish(
   Optional[String] $as_admin_user            = 'admin',
   Optional[String] $as_admin_password        = 'admin',
   Optional[String] $as_admin_master_password = 'changeit',
-  Optional[String] $passfile_path            = '/tmp/tmppassfile'
+  Optional[String] $passfile_path            = '/tmp/.asadminpass'
   ) {
 # Global variables
   $use_version = $version ? {

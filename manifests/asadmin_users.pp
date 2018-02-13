@@ -15,7 +15,7 @@ define glassfish::asadmin_users(
 ) {
   # Setting up asadmin binary full path
   Exec{
-    path  => "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:${asadmin_path}",
+    path  => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:',
   }
   # Configure admin and master password
   if $as_admin_password and $as_admin_master_password {
@@ -27,10 +27,9 @@ define glassfish::asadmin_users(
       path    => $passfile_path,
     }
     exec { 'change_master_password':
-      command     => "asadmin change-master-password --passwordfile=${passfile_path} --savemasterpassword",
+      command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${passfile_path} --savemasterpassword",
       refreshonly => true,
       creates     => $passfile_path,
-      cwd         => $asadmin_path,
     }
 
     if $as_admin_user{
