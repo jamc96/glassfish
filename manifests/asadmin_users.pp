@@ -10,7 +10,8 @@ define glassfish::asadmin_users(
   Optional[String] $as_admin_user            = undef,
   Optional[String] $as_admin_password        = undef,
   Optional[String] $as_admin_master_password = undef,
-  Optional[String] $passfile_path            = undef,
+  Optional[String] $as_admin_path            = undef,
+  Optional[String] $as_master_path           = undef,
   Optional[String] $asadmin_path             = undef,
 ) {
   # Setting up asadmin binary full path
@@ -19,18 +20,16 @@ define glassfish::asadmin_users(
   }
   # Configure admin and master password
   if $as_admin_password and $as_admin_master_password {
-    file { 'passfile':
+    file { 'as_master_pass':
       ensure  => file,
-      owner   => 'glassfish',
-      group   => 'glassfish',
-      content => template("${module_name}/passfile.erb"),
-      path    => $passfile_path,
+      content => template("${module_name}/as_master_pass.erb"),
+      path    => $as_master_path,
       notify  => Exec['change_master_password'],
     }
     exec { 'change_master_password':
-      command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${passfile_path} --savemasterpassword",
+      command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_master_path} --savemasterpassword",
       refreshonly => true,
-      creates     => $passfile_path,
+      creates     => $as_master_path,
     }
 
     if $as_admin_user{

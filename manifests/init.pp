@@ -17,7 +17,8 @@ class glassfish(
   Optional[String] $as_admin_user            = 'admin',
   Optional[String] $as_admin_password        = 'admin',
   Optional[String] $as_admin_master_password = 'changeit',
-  Optional[String] $passfile_path            = '/tmp/.asadminpass'
+  Optional[String] $as_master_path           = '/tmp/.as_master_pass',
+  Optional[String] $as_admin_path            = '/tmp/.as_admin_pass',
   ) {
 # Global variables
   $use_version = $version ? {
@@ -48,7 +49,8 @@ class glassfish(
     as_admin_user            => $as_admin_user,
     as_admin_password        => $as_admin_password,
     as_admin_master_password => $as_admin_master_password,
-    passfile_path            => $passfile_path,
+    as_master_path           => $as_master_path,
+    as_admin_path            => $as_admin_path,
     asadmin_path             => $asadmin_path,
   }
   class { '::glassfish::install': } -> Class['::glassfish']
