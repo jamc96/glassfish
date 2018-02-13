@@ -22,7 +22,7 @@ define glassfish::asadmin_users(
   if $as_admin_password and $as_admin_master_password {
     file { 'as_master_pass':
       ensure  => file,
-      content => template("${module_name}/asadminpass.erb"),
+      content => template("${module_name}/as_master_pass.erb"),
       path    => $as_master_path,
       notify  => Exec['change_master_password'],
     }
