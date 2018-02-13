@@ -30,9 +30,7 @@ define glassfish::asadmin_users(
       command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_master_path} --savemasterpassword",
       refreshonly => true,
     }
-    # notify { 'test':
-    #   message => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_master_path} --savemasterpassword",
-    # }
+
     if $as_admin_user{
       #Service['glassfish'] -> Exec['change_admin_password']
       # exec { 'change_admin_password':

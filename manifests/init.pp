@@ -7,18 +7,19 @@
 # @example
 #   include glassfish
 class glassfish(
-  Pattern[/latest|^[.+_0-9:~-]+$/] $version  = '4.1',
-  Pattern[/present|absent/] $package_ensure  = 'present',
-  Pattern[/zip|tar.gz/] $package_type        = 'zip',
-  Optional[String] $package_name             = undef,
-  Optional[String] $package_source           = undef,
-  Pattern[/present|absent/] $config_ensure   = 'present',
-  Optional[String] $config_path              = undef,
-  Optional[String] $as_admin_user            = 'admin',
-  Optional[String] $as_admin_password        = 'admin',
-  Optional[String] $as_admin_master_password = 'changeit',
-  Optional[String] $as_master_path           = '/tmp/.as_master_pass',
-  Optional[String] $as_admin_path            = '/tmp/.as_admin_pass',
+  Pattern[/latest|^[.+_0-9:~-]+$/] $version          = '4.1',
+  Pattern[/present|absent/] $package_ensure          = 'present',
+  Pattern[/zip|tar.gz/] $package_type                = 'zip',
+  Optional[String] $package_name                     = undef,
+  Optional[String] $package_source                   = undef,
+  Pattern[/present|absent/] $config_ensure           = 'present',
+  Optional[String] $config_path                      = undef,
+  Optional[String] $as_admin_user                    = 'admin',
+  Optional[String] $as_admin_password                = 'admin',
+  Optional[String] $as_admin_master_password         = 'changeit',
+  Optional[String] $as_master_path                   = '/tmp/.as_master_pass',
+  Optional[String] $as_admin_path                    = '/tmp/.as_admin_pass',
+  Pattern[/running|stopped|restart/] $service_ensure = 'running',
   ) {
 # Global variables
   $use_version = $version ? {
@@ -53,5 +54,5 @@ class glassfish(
     as_admin_path            => $as_admin_path,
     asadmin_path             => $asadmin_path,
   }
-  class { '::glassfish::install': } -> Class['::glassfish']
+  class { '::glassfish::install': } ~> class { '::glassfish::service': } -> Class['::glassfish']
 }
