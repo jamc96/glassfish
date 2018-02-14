@@ -38,7 +38,6 @@ define glassfish::asadmin_users(
         content => template("${module_name}/as_admin_pass.erb"),
         path    => $as_admin_path,
         notify  => Exec['change_admin_password'],
-        require => Service['glassfish'],
       }
       exec { 'change_admin_password':
         command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_admin_path} change-admin-password",
