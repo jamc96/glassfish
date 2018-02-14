@@ -15,12 +15,12 @@ class glassfish::service(
   ::glassfish::create_service{ 'default':
     asadmin_path => $asadmin_path,
     domain       => $domain,
+    notify       => Service['glassfish'],
   }
-  service { $service_name:
-    ensure  => $service_ensure,
-    name    => $service_name,
-    start   => "/etc/init.d/${service_name}_${domain} start",
-    stop    => "/etc/init.d/${service_name}_${domain} stop",
-    require => Glassfish::Create_service['default'],
+  service { 'glassfish':
+    ensure => $service_ensure,
+    name   => "${service_name}_${domain}",
+    start  => "/etc/init.d/${service_name}_${domain} start",
+    stop   => "/etc/init.d/${service_name}_${domain} stop",
   }
 }
