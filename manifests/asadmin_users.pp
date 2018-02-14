@@ -37,10 +37,10 @@ define glassfish::asadmin_users(
     }
 
     if $as_admin_user{
-      transition { 'stop glassfish service':
+      transition { 'start glassfish service':
         resource   => Service['glassfish'],
         attributes => { ensure => running },
-        prior_to   => File['as_master_pass'],
+        prior_to   => File['as_admin_pass'],
       }
       file { 'as_admin_pass':
         ensure  => file,
