@@ -18,9 +18,10 @@ class glassfish::service(
     notify       => Service['glassfish'],
   }
   service { 'glassfish':
-    ensure => $service_ensure,
-    name   => "${service_name}_${domain}",
-    start  => "/etc/init.d/${service_name}_${domain} start",
-    stop   => "/etc/init.d/${service_name}_${domain} stop",
+    ensure  => $service_ensure,
+    name    => "${service_name}_${domain}",
+    start   => "/etc/init.d/${service_name}_${domain} start",
+    stop    => "/etc/init.d/${service_name}_${domain} stop",
+    restart => "/etc/init.d/${service_name}_${domain} restart",
   }
 }

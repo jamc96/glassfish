@@ -32,12 +32,17 @@ define glassfish::asadmin_users(
     }
 
     if $as_admin_user{
-      #Service['glassfish'] -> Exec['change_admin_password']
-      # exec { 'change_admin_password':
-      #  command     => "--user ${as_admin_user} --passwordfile=${passfile_path} change-admin-password",
-      #  refreshonly => true,
-      #  suscribe    => File['passfile'],
-      #}
+      file { 'as_admin_pass':
+        ensure  => file,
+        content => template("${module_name}/as_admin_pass.erb"),
+        path    => $as_admin_path,
+        notify  => Exec['change_admin_password'],
+        require => Service['glassfish'],
+      }
+      exec { 'change_admin_password':
+        command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_admin_path} change-admin-password",
+        refreshonly => true,
+      }
     }
   }
 }
