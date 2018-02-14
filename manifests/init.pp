@@ -57,5 +57,5 @@ class glassfish(
     as_admin_path            => $as_admin_path,
     asadmin_path             => $asadmin_path,
   }
-  class { '::glassfish::install': } ~> class { '::glassfish::service': } -> Class['::glassfish']
+  class { '::glassfish::install': } -> class { '::glassfish::service': } -> Class['::glassfish']
 }
