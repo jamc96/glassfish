@@ -20,6 +20,9 @@ class glassfish(
   Optional[String] $as_master_path                   = '/tmp/.as_master_pass',
   Optional[String] $as_admin_path                    = '/tmp/.as_admin_pass',
   Pattern[/running|stopped|restart/] $service_ensure = 'running',
+  Optional[String] $service_name                     = 'glassfish',
+  Optional[String] $domain                           = 'domain1',
+  Pattern[/^[0-9]+$/] $port                          = '4848',
   ) {
 # Global variables
   $use_version = $version ? {

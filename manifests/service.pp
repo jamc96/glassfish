@@ -8,12 +8,19 @@
 #   include glassfish::service
 class glassfish::service(
   $service_ensure = $::glassfish::service_ensure,
-  $as_admin_path  = $::glassfish::as_admin_path,
+  $asadmin_path   = $::glassfish::asadmin_path,
+  $service_name   = $::glassfish::service_name,
+  $domain         = $::glassfish::domain,
 ){
-  service { 'glassfish':
-    ensure => $service_ensure,
-    path   => "${as_admin_path}/asadmin",
-    start  => 'start-domain',
-    stop   => 'stop-domain',
+  ::glassfish::create_service{ 'default':
+    asadmin_path => $asadmin_path,
+    domain       => $domain,
+  }
+  service { $service_name:
+    ensure  => $service_ensure,
+    name    => $service_name,
+    start   => "/etc/init.d/${service_name}_${domain} start",
+    stop    => "/etc/init.d/${service_name}_${domain} stop",
+    require => Glassfish::Create_service['default'],
   }
 }

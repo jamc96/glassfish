@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# File Managed by Puppet 
+
+ASADMIN="<%= @asadmin_path %>/asadmin"
+
+case "$1" in
+start)
+    $ASADMIN start-domain  --port <%= @port %> <%= @domain%>
+    ;;
+stop)
+    $ASADMIN stop-domain --port <%= @port %> <%= @domain%>
+    ;;
+restart)
+    $ASADMIN stop-domain --port <%= @port %> <%= @domain%>
+    $ASADMIN start-domain --port <%= @port %> <%= @domain%>
+    ;;
+*)
+    echo "usage: $0 (start|stop|restart|help)"
+esac
