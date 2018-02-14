@@ -48,7 +48,7 @@ class glassfish(
   $config_v = regsubst($use_version,'^(\d+)(\.(\d+)\.(\d+)|\.(\d+))$','\1')
   $asadmin_path = "${use_config_path}/glassfish${config_v}/glassfish/bin"
 
-  # Configure admin and master password
+  # Set master password
   if $as_admin_password and $as_admin_master_password {
     file { 'as_master_pass':
       ensure  => file,
@@ -56,12 +56,13 @@ class glassfish(
       path    => $as_master_path,
       before  => Service['glassfish'],
       notify  => Exec['change_master_password'],
+      require => Class['glassfish::install'],
     }
     exec { 'change_master_password':
       command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_master_path} --savemasterpassword",
       refreshonly => true,
     }
-
+    # Set admin password
     if $as_admin_user{
       file { 'as_admin_pass':
         ensure  => file,
@@ -74,6 +75,12 @@ class glassfish(
         command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_admin_path} change-admin-password",
         refreshonly => true,
       }
+    }
+    # Enable Secure Admin on Installation
+    exec { 'enable_secure_admin':
+      command     => "${asadmin_path}/asadmin enable-secure-admin --passwordfile=${as_admin_path}",
+      refreshonly => true,
+      notify      => Service['glassfish'],
     }
   }
   class { '::glassfish::install': } ~> class { '::glassfish::service': }
