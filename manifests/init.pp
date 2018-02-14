@@ -1,4 +1,4 @@
-# glassfish
+  # glassfish
 #
 # A description of what this class does
 #
@@ -48,5 +48,33 @@ class glassfish(
   $config_v = regsubst($use_version,'^(\d+)(\.(\d+)\.(\d+)|\.(\d+))$','\1')
   $asadmin_path = "${use_config_path}/glassfish${config_v}/glassfish/bin"
 
-  class { '::glassfish::install': } class { '::glassfish::config': } ~> class { '::glassfish::service': } -> Class['::glassfish']
+  # Configure admin and master password
+  if $as_admin_password and $as_admin_master_password {
+    file { 'as_master_pass':
+      ensure  => file,
+      content => template("${module_name}/as_master_pass.erb"),
+      path    => $as_master_path,
+      before  => Service['glassfish'],
+      notify  => Exec['change_master_password'],
+    }
+    exec { 'change_master_password':
+      command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_master_path} --savemasterpassword",
+      refreshonly => true,
+    }
+
+    if $as_admin_user{
+      file { 'as_admin_pass':
+        ensure  => file,
+        content => template("${module_name}/as_admin_pass.erb"),
+        path    => $as_admin_path,
+        notify  => Exec['change_admin_password'],
+        require => Service['glassfish'],
+      }
+      exec { 'change_admin_password':
+        command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_admin_path} change-admin-password",
+        refreshonly => true,
+      }
+    }
+  }
+  class { '::glassfish::install': } ~> class { '::glassfish::service': }
 }
