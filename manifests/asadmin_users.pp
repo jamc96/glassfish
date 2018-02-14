@@ -20,7 +20,7 @@ define glassfish::asadmin_users(
   }
   # Configure admin and master password
   if $as_admin_password and $as_admin_master_password {
-    transition { 'stop glassfish service before as_master_pass':
+    transition { 'stop glassfish service':
       resource   => Service['glassfish'],
       attributes => { ensure => stopped },
       prior_to   => File['as_master_pass'],
@@ -30,7 +30,6 @@ define glassfish::asadmin_users(
       content => template("${module_name}/as_master_pass.erb"),
       path    => $as_master_path,
       notify  => Exec['change_master_password'],
-      before  => Service['Glassfish'],
     }
     exec { 'change_master_password':
       command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_master_path} --savemasterpassword",
@@ -38,10 +37,10 @@ define glassfish::asadmin_users(
     }
 
     if $as_admin_user{
-      transition { 'start glassfish service before as_admin_pass':
+      transition { 'stop glassfish service':
         resource   => Service['glassfish'],
         attributes => { ensure => running },
-        prior_to   => File['as_admin_pass'],
+        prior_to   => File['as_master_pass'],
       }
       file { 'as_admin_pass':
         ensure  => file,
