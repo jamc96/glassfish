@@ -48,14 +48,5 @@ class glassfish(
   $config_v = regsubst($use_version,'^(\d+)(\.(\d+)\.(\d+)|\.(\d+))$','\1')
   $asadmin_path = "${use_config_path}/glassfish${config_v}/glassfish/bin"
 
-  # Create admin and master users by default
-  ::glassfish::asadmin_users { 'default':
-    as_admin_user            => $as_admin_user,
-    as_admin_password        => $as_admin_password,
-    as_admin_master_password => $as_admin_master_password,
-    as_master_path           => $as_master_path,
-    as_admin_path            => $as_admin_path,
-    asadmin_path             => $asadmin_path,
-  }
-  class { '::glassfish::install': } -> class { '::glassfish::service': } -> Class['::glassfish']
+  class { '::glassfish::install': } class { '::glassfish::config': } ~> class { '::glassfish::service': } -> Class['::glassfish']
 }

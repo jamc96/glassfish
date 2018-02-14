@@ -25,7 +25,6 @@ define glassfish::asadmin_users(
       content => template("${module_name}/as_master_pass.erb"),
       path    => $as_master_path,
       notify  => Exec['change_master_password'],
-      before  => Service['glassfish'],
     }
     exec { 'change_master_password':
       command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_master_path} --savemasterpassword",
