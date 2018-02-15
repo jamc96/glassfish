@@ -26,9 +26,8 @@ define glassfish::asadmin(
   Pattern[/^[.+_0-9:~-]+$/] $port   = $::glassfish::port,
   Optional[String] $config          = undef,
   Optional[String] $value           = undef,
-  Optional[String] $passfile_path   = $::glassfish::passfile_path,
+  Optional[String] $passfile_path   = $::glassfish::as_admin_path,
   Optional[String] $asadmin_path    = $::glassfish::asadmin_path,
-  Boolean $java_status              = true,
   Optional[String] $concat_str      = undef
 ) {
   if $config {
@@ -40,18 +39,30 @@ define glassfish::asadmin(
       fail('$value parameter is required to apply the configuration')
     }else {
       # create execute command 
-      $cmd_asadmin = "--user ${as_admin_user} --port ${port} --passwordfile=${passfile_path} set ${config}=${value}"
+      $cmd_asadmin = "${asadmin_path}/asadmin --user ${as_admin_user} --port ${port} --passwordfile=${passfile_path} set ${config}=${value}"
     }
   }
   if $concat_str {
-    $cmd_asadmin = "--user ${as_admin_user} --port ${port} --passwordfile=${passfile_path} ${concat_str}"
+    $cmd_asadmin = "${asadmin_path}/asadmin --user ${as_admin_user} --port ${port} --passwordfile=${passfile_path} ${concat_str}"
   }
   # apply configuration over glassfish
   if $cmd_asadmin {
-    if !$java_status {
-      notify { 'test command': message => "${cmd_asadmin} -> kill java" }
+    if $java_status == false {
+      exec { $title :
+        command => $cmd_asadmin,
+        notify  => Exec['stop_java'],
+      }
+      exec { 'stop_java':
+        path    => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
+        command => 'kill -9 `pidof java`',
+      }
     }else{
-      notify { 'test command': message => $cmd_asadmin }
+      exec { $title :
+        command     => $cmd_asadmin,
+        refreshonly => true,
+        notify      => Exec['restart_glassfish'],
+        require     => File['as_admin_pass'],
+      }
     }
   }
 

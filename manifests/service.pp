@@ -11,6 +11,7 @@ class glassfish::service(
   $asadmin_path   = $::glassfish::asadmin_path,
   $service_name   = $::glassfish::service_name,
   $domain         = $::glassfish::domain,
+  $port           = $::glassfish::port,
 ){
   ::glassfish::create_service{ 'default':
     asadmin_path => $asadmin_path,
