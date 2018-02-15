@@ -24,4 +24,5 @@ class glassfish::service(
     stop    => "/etc/init.d/${service_name}_${domain} stop",
     restart => "/etc/init.d/${service_name}_${domain} restart",
   }
+
 }

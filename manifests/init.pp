@@ -68,7 +68,7 @@ class glassfish(
         ensure  => file,
         content => template("${module_name}/as_admin_pass.erb"),
         path    => $as_admin_path,
-        notify  => Exec['change_admin_password'],
+        notify  => [Exec['change_admin_password'],Exec['enable_secure_admin']],
         require => Service['glassfish'],
       }
       exec { 'change_admin_password':
@@ -80,7 +80,11 @@ class glassfish(
     exec { 'enable_secure_admin':
       command     => "${asadmin_path}/asadmin enable-secure-admin --passwordfile=${as_admin_path}",
       refreshonly => true,
-      notify      => Service['glassfish'],
+      notify      => Exec['restart_glassfish'],
+    }
+    exec { 'restart_glassfish':
+      command     => "/etc/init.d/${service_name}_${domain} restart",
+      refreshonly => true,
     }
   }
   class { '::glassfish::install': } ~> class { '::glassfish::service': }
