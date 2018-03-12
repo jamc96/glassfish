@@ -23,6 +23,8 @@ class glassfish(
   Optional[String] $service_name                     = 'glassfish',
   Optional[String] $domain                           = 'domain1',
   Pattern[/^[0-9]+$/] $port                          = '4848',
+  Pattern[/^[0-9]+$/] $https_port                    = '8181',
+  Pattern[/^[0-9]+$/] $http_port                     = '82020',
   ) {
 # Global variables
   $use_version = $version ? {
@@ -84,6 +86,24 @@ class glassfish(
     }
     exec { 'restart_glassfish':
       command     => "/etc/init.d/${service_name}_${domain} restart",
+      refreshonly => true,
+    }
+    if $port != '4848'{
+      glassfish::asadmin { 'admin_listener_port':
+        config => 'configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.port',
+        value  => $port,
+        notify => Exec['kill_java'],
+      }
+    }
+    if $https_port != '8181'{
+      glassfish::asadmin { 'https_listener_port':
+        config => 'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port',
+        value  => $https_port,
+        notify => Exec['kill_java'],
+      }
+    }
+    exec { 'kill_java':
+      command     => 'kill -9 `pidof java`',
       refreshonly => true,
     }
   }
