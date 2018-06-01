@@ -50,62 +50,10 @@ class glassfish(
   $config_v = regsubst($use_version,'^(\d+)(\.(\d+)\.(\d+)|\.(\d+))$','\1')
   $asadmin_path = "${use_config_path}/glassfish${config_v}/glassfish/bin"
 
-  # Set master password
-  if $as_admin_password and $as_admin_master_password {
-    file { 'as_master_pass':
-      ensure  => file,
-      content => template("${module_name}/as_master_pass.erb"),
-      path    => $as_master_path,
-      before  => Service['glassfish'],
-      notify  => Exec['change_master_password'],
-      require => Class['glassfish::install'],
-    }
-    exec { 'change_master_password':
-      command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_master_path} --savemasterpassword",
-      refreshonly => true,
-    }
-    # Set admin password
-    if $as_admin_user{
-      file { 'as_admin_pass':
-        ensure  => file,
-        content => template("${module_name}/as_admin_pass.erb"),
-        path    => $as_admin_path,
-        notify  => [Exec['change_admin_password'],Exec['enable_secure_admin']],
-        require => Service['glassfish'],
-      }
-      exec { 'change_admin_password':
-        command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_admin_path} change-admin-password",
-        refreshonly => true,
-      }
-    }
-    # Enable Secure Admin on Installation
-    exec { 'enable_secure_admin':
-      command     => "${asadmin_path}/asadmin enable-secure-admin --passwordfile=${as_admin_path}",
-      refreshonly => true,
-      notify      => Exec['restart_glassfish'],
-    }
-    exec { 'restart_glassfish':
-      command     => "/etc/init.d/${service_name}_${domain} restart",
-      refreshonly => true,
-    }
-    if $port != '4848'{
-      glassfish::asadmin { 'admin_listener_port':
-        config => 'configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.port',
-        value  => $port,
-        notify => Exec['kill_java'],
-      }
-    }
-    if $https_port != '8181'{
-      glassfish::asadmin { 'https_listener_port':
-        config => 'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port',
-        value  => $https_port,
-        notify => Exec['kill_java'],
-      }
-    }
-    exec { 'kill_java':
-      command     => 'kill -9 `pidof java`',
-      refreshonly => true,
-    }
-  }
-  class { '::glassfish::install': } ~> class { '::glassfish::service': }
+  # glassfish containment
+  contain ::glassfish::install
+  contain ::glassfish::service
+
+  Class['::glassfish::install']
+  ~> Class['::glassfish::service']
 }

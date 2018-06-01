@@ -16,7 +16,7 @@ class glassfish::install(
   #archive module is used to download and extract the installer
   include ::archive
 
-  file { 'glassfish_config' :
+  file { $config_path :
     ensure => $config_ensure,
     path   => $config_path,
   }
