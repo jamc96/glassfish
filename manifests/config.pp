@@ -7,10 +7,10 @@
 # @example
 #   include glassfish::config
 class glassfish::config(
-  $package_ensure   = $::glassfish::use_package_ensure,
+  $package_ensure   = $::glassfish::package_ensure,
   $package_name     = $::glassfish::use_package_name,
   $package_source   = $::glassfish::use_package_source,
-  $config_ensure    = $::glassfish::use_config_ensure,
+  $config_ensure    = $::glassfish::config_ensure,
   $config_path      = $::glassfish::use_config_path,
   $as_root_path     = $::glassfish::use_as_root_path,
   $manage_user      = $::glassfish::manage_user,
