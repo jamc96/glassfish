@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'glassfish::create_service' do
+describe 'glassfish::create_daemon' do
   let(:title) { 'namevar' }
   let(:params) do
     {}

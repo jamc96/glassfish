@@ -12,7 +12,7 @@ class glassfish(
   Enum['zip','tar'] $package_type                    = 'zip',
   Optional[String] $package_name                     = undef,
   Optional[String] $package_source                   = undef,
-  Enum['present','absent'] $config_ensure            = 'present',
+  Enum['directory','absent'] $config_ensure          = 'directory',
   Optional[String] $config_path                      = undef,
   String $as_admin_user                              = 'admin',
   String $as_admin_password                          = 'admin',
@@ -24,16 +24,12 @@ class glassfish(
   Pattern[/^[0-9]+$/] $port                          = '4848',
   Pattern[/^[0-9]+$/] $https_port                    = '8181',
   Pattern[/^[0-9]+$/] $http_port                     = '82020',
-  Boolean $manage_user                               = false,
+  Boolean $manage_user                               = true,
   ) {
 # Global variables
   $use_version = $version ? {
     'latest' => '5.0',
     default  => $version,
-  }
-  $use_config_ensure = $config_ensure ? {
-    'present' => 'directory',
-    default   => $config_ensure,
   }
   $use_config_path = $config_path ? {
     undef   => "/opt/glassfish-${use_version}",

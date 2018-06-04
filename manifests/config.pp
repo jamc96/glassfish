@@ -50,7 +50,7 @@ class glassfish::config(
     require      => File[$config_path],
   }
   # create init service file
-  ::glassfish::create_service{ 'default':
+  ::glassfish::create_daemon{ 'glassfish':
     asadmin_path => $asadmin_path,
     domain       => $domain,
   }
@@ -60,12 +60,12 @@ class glassfish::config(
       ensure  => $config_ensure,
       mode    => '0644',
       notify  => Exec['change_master_password'],
-      require => Glassfish::Create_service['default'];
+      require => Glassfish::Create_daemon['glassfish'];
     "${as_root_path}/.as_admin_pass":
       ensure  => $config_ensure,
       mode    => '0644',
       notify  => Exec['change_admin_password'],
-      require => Glassfish::Create_service['default'];
+      require => Glassfish::Create_daemon['glassfish'];
   }
   # set password on admin and asadmin user
   exec { 'change_master_password':
