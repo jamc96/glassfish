@@ -58,12 +58,12 @@ class glassfish::config(
   # master password files
   file {
     "${as_root_path}/.as_master_pass":
-      ensure  => $config_ensure,
+      ensure  => 'file',
       mode    => '0644',
       notify  => Exec['change_master_password'],
       require => Glassfish::Create_daemon['glassfish'];
     "${as_root_path}/.as_admin_pass":
-      ensure  => $config_ensure,
+      ensure  => 'file',
       mode    => '0644',
       notify  => Exec['change_admin_password'],
       require => Glassfish::Create_daemon['glassfish'];

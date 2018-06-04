@@ -25,6 +25,7 @@ class glassfish(
   Pattern[/^[0-9]+$/] $https_port                    = '8181',
   Pattern[/^[0-9]+$/] $http_port                     = '82020',
   Boolean $manage_user                               = true,
+  Boolean $manage_java                               = true,
   ) {
 # Global variables
   $use_version = $version ? {
