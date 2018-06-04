@@ -73,14 +73,20 @@ class glassfish::config(
       require => Glassfish::Create_daemon['glassfish'];
   }
   # set password on admin and asadmin user
+  # change master password
   exec { 'change_master_password':
     command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_root_path}/.as_master_pass --savemasterpassword",
     refreshonly => true,
     notify      => Service['glassfish'],
   }
+  # start glassfish service
+  Exec['change_master_password'] -> Service['glassfish']
+  # change admin password
   exec { 'change_admin_password':
     command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass change-admin-password",
     refreshonly => true,
     notify      => Service['glassfish'],
   }
+  # restart glassfish service
+  Exec['change_admin_password'] ~> Service['glassfish']
 }
