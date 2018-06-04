@@ -53,6 +53,7 @@ class glassfish::config(
   ::glassfish::create_daemon{ 'glassfish':
     asadmin_path => $asadmin_path,
     domain       => $domain,
+    require      => Archive[$package_name],
   }
   # master password files
   file {
