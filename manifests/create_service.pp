@@ -18,10 +18,10 @@ define glassfish::create_service(
   } else {
     # creating init file 
     file { 'create_service':
-    ensure  => 'present',
-    path    => "/etc/init.d/${service_name}_${domain}",
-    mode    => '0775',
-    content => template("${module_name}/rhel_service.erb"),
+      ensure  => 'present',
+      path    => "/etc/init.d/${service_name}_${domain}",
+      mode    => '0775',
+      content => template("${module_name}/rhel_service.erb"),
     }
   }
 }

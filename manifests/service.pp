@@ -13,11 +13,7 @@ class glassfish::service(
   $domain         = $::glassfish::domain,
   $port           = $::glassfish::port,
 ){
-  ::glassfish::create_service{ 'default':
-    asadmin_path => $asadmin_path,
-    domain       => $domain,
-    notify       => Service['glassfish'],
-  }
+  # create service glassfish
   service { 'glassfish':
     ensure  => $service_ensure,
     name    => "${service_name}_${domain}",
