@@ -7,16 +7,18 @@
 # @example
 #   include glassfish::config
 class glassfish::config(
-  $package_ensure   = $::glassfish::package_ensure,
-  $package_name     = $::glassfish::use_package_name,
-  $package_source   = $::glassfish::use_package_source,
-  $config_ensure    = $::glassfish::config_ensure,
-  $config_path      = $::glassfish::use_config_path,
-  $as_root_path     = $::glassfish::use_as_root_path,
-  $manage_user      = $::glassfish::manage_user,
-  $asadmin_path     = $::glassfish::asadmin_path,
-  $domain           = $::glassfish::domain,
-  $as_admin_user    = $::glassfish::as_admin_user,
+  $package_ensure           = $::glassfish::package_ensure,
+  $package_name             = $::glassfish::use_package_name,
+  $package_source           = $::glassfish::use_package_source,
+  $config_ensure            = $::glassfish::config_ensure,
+  $config_path              = $::glassfish::use_config_path,
+  $as_root_path             = $::glassfish::use_as_root_path,
+  $manage_user              = $::glassfish::manage_user,
+  $asadmin_path             = $::glassfish::asadmin_path,
+  $domain                   = $::glassfish::domain,
+  $as_admin_user            = $::glassfish::as_admin_user,
+  $as_admin_password        = $::glassfish::as_admin_password,
+  $as_admin_master_password = $::glassfish::as_admin_master_password,
 ) {
   # archive module
   include ::archive
