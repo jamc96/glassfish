@@ -61,11 +61,13 @@ class glassfish::config(
       ensure  => 'file',
       mode    => '0644',
       notify  => Exec['change_master_password'],
+      content => template("${module_name}/as_master_pass.erb"),
       require => Glassfish::Create_daemon['glassfish'];
     "${as_root_path}/.as_admin_pass":
       ensure  => 'file',
       mode    => '0644',
       notify  => Exec['change_admin_password'],
+      content => template("${module_name}/as_admin_pass.erb"),
       require => Glassfish::Create_daemon['glassfish'];
   }
   # set password on admin and asadmin user
