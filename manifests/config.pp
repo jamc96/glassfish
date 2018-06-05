@@ -19,6 +19,7 @@ class glassfish::config(
   $as_admin_user            = $::glassfish::as_admin_user,
   $as_admin_password        = $::glassfish::as_admin_password,
   $as_admin_master_password = $::glassfish::as_admin_master_password,
+  $service_name             = $::glassfish::service_name,
 ) {
   # archive module
   include ::archive
@@ -77,12 +78,17 @@ class glassfish::config(
   exec { 'change_master_password':
     command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_root_path}/.as_master_pass --savemasterpassword",
     refreshonly => true,
+    notify      => Exec['start_glassfish_service'],
+  }
+  # fake start of service
+  exec { 'start_glassfish_service':
+    command     => "/etc/init.d/${service_name}_${domain} start",
+    refreshonly => true,
   }
   # change admin password
   exec { 'change_admin_password':
     command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass change-admin-password",
     refreshonly => true,
+    notify      => Service['glassfish'],
   }
-  # restart glassfish service
-  Exec['change_master_password'] -> Service['glassfish'] -> Exec['change_admin_password'] -> Exec['restart_glassfish_service']
 }
