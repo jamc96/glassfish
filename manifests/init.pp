@@ -55,6 +55,10 @@ class glassfish(
   $config_v = regsubst($use_version,'^(\d+)(\.(\d+)\.(\d+)|\.(\d+))$','\1')
   $asadmin_path = "${use_config_path}/glassfish${config_v}/glassfish/bin"
 
+  exec { 'restart_glassfish_service':
+    command     => "/etc/init.d/${service_name}_${domain} restart",
+    refreshonly =>  true,
+  }
   # glassfish containment
   contain ::glassfish::config
   contain ::glassfish::service
