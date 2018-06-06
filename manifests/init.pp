@@ -24,8 +24,8 @@ class glassfish(
   Pattern[/^[0-9]+$/] $port                          = '4848',
   Pattern[/^[0-9]+$/] $secure_port                   = '8181',
   Boolean $manage_user                               = true,
-  Array $asadmin_set                                 = [],
-  Array $asadmin_create_managed                      = []
+  Optional[Array] $asadmin_set                       = undef,
+  Optional[Array] $asadmin_create_managed            = undef,
   ) {
   # default variables
   $use_version = $version ? {
@@ -71,15 +71,17 @@ class glassfish(
   contain ::glassfish::service
   # glassfish configuration
   include ::glassfish::config
-
-  # apply tunning on glassfish 
-  glassfish::asadmin { 'tunning':
-    set            => $asadmin_set,
-    create_managed => $asadmin_create_managed,
-    asadmin_path   => "${asadmin_path}/asadmin",
-    port           => $port,
-    as_admin_user  => $as_admin_user,
+  # validate if array exist
+  if $asadmin_set and $asadmin_create_managed {
+    # apply tunning on glassfish 
+    glassfish::asadmin { 'tunning':
+      set            => $asadmin_set,
+      create_managed => $asadmin_create_managed,
+      asadmin_path   => "${asadmin_path}/asadmin",
+      port           => $port,
+      as_admin_user  => $as_admin_user,
+    }
+    # restart glassfish service after apply configuration
+    Glassfish::Asadmin['tunning'] ~> Service['glassfish']
   }
-  # restart glassfish service after apply configuration
-  Glassfish::Asadmin['tunning'] ~> Service['glassfish']
 }
