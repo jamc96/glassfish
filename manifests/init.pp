@@ -80,4 +80,6 @@ class glassfish(
     port           => $port,
     as_admin_user  => $as_admin_user,
   }
+  # restart glassfish service after apply configuration
+  Glassfish::Asadmin['tunning'] ~> Service['glassfish']
 }

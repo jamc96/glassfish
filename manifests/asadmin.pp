@@ -59,6 +59,5 @@ define glassfish::asadmin(
     command     => "sh ${as_root_path}/configs.sh",
     refreshonly => true,
     path        => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
-    notify      => Service['glassfish'],
   }
 }

@@ -114,6 +114,11 @@ class glassfish::config(
     command     => 'kill -9 `pidof java`',
     path        => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
     refreshonly => true,
-    notify      => Exec['start_glassfish_service'],
+    notify      => Exec['refresh_glassfish_service'],
+  }
+  # fake refresh of service
+  exec { 'refresh_glassfish_service':
+    command     => "/etc/init.d/${service_name}_${domain} start",
+    refreshonly => true,
   }
 }
