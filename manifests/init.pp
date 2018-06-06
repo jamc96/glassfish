@@ -22,7 +22,7 @@ class glassfish(
   Optional[String] $service_name                     = 'glassfish',
   Optional[String] $domain                           = 'domain1',
   Pattern[/^[0-9]+$/] $port                          = '4848',
-  Pattern[/^[0-9]+$/] $http_port                     = '8080',
+  Pattern[/^[0-9]+$/] $secure_port                   = '8181',
   Boolean $manage_user                               = true,
   ) {
 # Global variables

@@ -21,7 +21,7 @@ class glassfish::config(
   $as_admin_master_password = $::glassfish::as_admin_master_password,
   $service_name             = $::glassfish::service_name,
   $port                     = $::glassfish::port,
-  $http_port                = $::glassfish::http_port,
+  $secure_port              = $::glassfish::secure_port,
 ) {
   # archive module
   include ::archive
@@ -100,12 +100,12 @@ class glassfish::config(
   exec { 'set_admin_listener_port':
     command     => "${set} ${admin_listener_config}",
     refreshonly => true,
-    notify      => Exec['set_http_port'],
+    notify      => Exec['set_secure_port'],
   }
   # set http port
-  $http_port_config = "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port=${http_port}"
-  exec { 'set_http_port':
-    command     => "${set} ${http_port_config}",
+  $secure_port_config = "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port=${secure_port}"
+  exec { 'set_secure_port':
+    command     => "${set} ${secure_port_config}",
     refreshonly => true,
     notify      => Exec['stop_java'],
   }
