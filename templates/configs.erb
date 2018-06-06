@@ -6,17 +6,18 @@
 # global variables
 ASADMIN=<%= @asadmin_path %>
 PASSWDPATH=<%= @as_admin_path %>
+PORT=<%= @port %>
 <%#  validating if the set configurations exist%>
 <% unless @set.empty? -%>
 # [SET]
 <% @set.each do |configs| -%>
-$ASADMIN --user admin --port 40575 --passwordfile=$PASSWDPATH set <%= configs %>
+$ASADMIN --user admin --port $PORT --passwordfile=$PASSWDPATH set <%= configs %>
 <% end -%>
 <% end -%>
 <%#  validating if the create_managed configurations exist%>
 <% unless @create_managed.empty? -%>
 # [CREATE MANAGED]
 <% @create_managed.each do |configs| -%>
-$ASADMIN --user admin --port 40575 --passwordfile=$PASSWDPATH create-managed-<%= configs %>
+$ASADMIN --user admin --port $PORT --passwordfile=$PASSWDPATH create-managed-<%= configs %>
 <% end -%>
 <% end -%>
