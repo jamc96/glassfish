@@ -69,8 +69,9 @@ class glassfish(
   # glassfish containment
   contain ::glassfish::config
   contain ::glassfish::service
-  # glassfish configuration
-  include ::glassfish::config
+  # glassfish class relationship
+  Class['::glassfish::config']
+  ~> Class['::glassfish::service']
   # validate if array exist
   if $asadmin_set and $asadmin_create_managed {
     # apply tunning on glassfish 
