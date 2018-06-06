@@ -21,14 +21,18 @@
 #
 #
 define glassfish::asadmin(
-  String $as_admin_user           = $::glassfish::as_admin_user,
-  Pattern[/^[.+_0-9:~-]+$/] $port = $::glassfish::port,
+  String $as_admin_user           = 'admin',
+  Pattern[/^[.+_0-9:~-]+$/] $port = '4848',
   Array $set                      = [],
-  String $as_root_path            = $::glassfish::use_as_root_path,
+  Array $create_managed           = [],
+  String $as_root_path            = '/home/glassfish',
   Optional[String] $as_admin_path = "${as_root_path}/.as_admin_pass",
-  Optional[String] $asadmin_path  = $::glassfish::asadmin_path,
+  Optional[String] $asadmin_path  = undef,
 ) {
   # global variables
+  if !$asadmin_path {
+    fail('$asadmin_path is required to create the script file')
+  }
   case $facts['os']['name'] {
     'CentOS': {
       $shell_path = $facts['operatingsystemmajrelease'] ? {
