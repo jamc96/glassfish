@@ -73,7 +73,7 @@ class glassfish(
   Class['::glassfish::config']
   ~> Class['::glassfish::service']
   # validate if array exist
-  if $asadmin_set and $asadmin_create_managed {
+  if $asadmin_set or $asadmin_create_managed {
     # apply tunning on glassfish 
     glassfish::asadmin { 'tunning':
       set            => $asadmin_set,
