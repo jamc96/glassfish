@@ -107,6 +107,13 @@ class glassfish::config(
   exec { 'set_http_port':
     command     => "${set} ${http_port_config}",
     refreshonly => true,
+    notify      => Exec['stop_java'],
+  }
+  # stop all java process and start service
+  exec { 'stop_java':
+    command     => 'kill -9 `pidof java`',
+    path        => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
+    refreshonly => true,
     notify      => Service['glassfish'],
   }
 }
