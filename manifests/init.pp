@@ -69,9 +69,8 @@ class glassfish(
   # glassfish containment
   contain ::glassfish::config
   contain ::glassfish::service
-  # glassfish relationship
-  Class['::glassfish::config']
-  ~> Class['::glassfish::service']
+  # glassfish configuration
+  include ::glassfish::config
 
   # apply tunning on glassfish 
   glassfish::asadmin { 'tunning':
@@ -80,6 +79,5 @@ class glassfish(
     asadmin_path   => "${asadmin_path}/asadmin",
     port           => $port,
     as_admin_user  => $as_admin_user,
-    require        => Class['glassfish::service'],
   }
 }
