@@ -21,33 +21,39 @@
 #
 #
 define glassfish::asadmin(
-  String $as_admin_user             = $::glassfish::as_admin_user,
-  Pattern[/^[.+_0-9:~-]+$/] $port   = $::glassfish::port,
-  Optional[String] $config          = undef,
-  Optional[String] $value           = undef,
-  Optional[String] $passfile_path   = $::glassfish::as_admin_path,
-  Optional[String] $asadmin_path    = $::glassfish::asadmin_path,
-  Optional[String] $concat_str      = undef
+  String $as_admin_user           = $::glassfish::as_admin_user,
+  Pattern[/^[.+_0-9:~-]+$/] $port = $::glassfish::port,
+  Array $set                      = [],
+  String $as_root_path            = $::glassfish::use_as_root_path,
+  Optional[String] $as_admin_path = "${as_root_path}/.as_admin_pass",
+  Optional[String] $asadmin_path  = $::glassfish::asadmin_path,
 ) {
-
-  if $config {
-    if !$value{
-      fail('$value parameter is required to apply the configuration')
-    }else {
-      # create execute command 
-      $cmd_asadmin = "${asadmin_path}/asadmin --user ${as_admin_user} --port ${port} --passwordfile=${passfile_path} set ${config}=${value}"
-    }
-  }
-  if $concat_str {
-    $cmd_asadmin = "${asadmin_path}/asadmin --user ${as_admin_user} --port ${port} --passwordfile=${passfile_path} ${concat_str}"
-  }
-  # apply configuration over glassfish
-  if $cmd_asadmin {
-      exec { $title :
-        command     => $cmd_asadmin,
-        refreshonly => true,
-        notify      => Exec['restart_glassfish'],
-        require     => File['as_admin_pass'],
+  # global variables
+  case $facts['os']['name'] {
+    'CentOS': {
+      $shell_path = $facts['operatingsystemmajrelease'] ? {
+        '7' => '/usr/bin/sh',
+        default => '/bin/sh',
       }
     }
+    default: {
+      $shell_path = '/bin/sh'
+    }
+  }
+  # create configs script
+  file { "${as_root_path}/configs.sh":
+    ensure       => file,
+    owner        => 'root',
+    group        => 'root',
+    mode         => '0500',
+    # notify       => Exec["${as_root_path}/configs.sh"],
+    validate_cmd => "${shell_path} -n %",
+    content      => template("${module_name}/configs.erb");
+  }
+  # apply configuration
+  # exec { "${as_root_path}/configs.sh":
+  #   command     => "sh ${as_root_path}/configs.sh",
+  #   refreshonly => true,
+  #   path        => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
+  # }
 }

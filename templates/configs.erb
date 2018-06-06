@@ -1,0 +1,12 @@
+#!/bin/bash
+# File Managed by Puppet 
+#
+# script to install JAVA and GLASSFISH
+#
+# global variables
+ASADMIN=<%= @asadmin_path %>
+PASSWDPATH=<%= @as_admin_path %>
+# SET config values section 
+<% @set.each do |configs| -%>
+$ASADMIN --user admin --port 40575 --passwordfile=$PASSWDPATH set <%= configs %>
+<% end -%>
