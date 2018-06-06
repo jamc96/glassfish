@@ -80,5 +80,6 @@ class glassfish(
     asadmin_path   => "${asadmin_path}/asadmin",
     port           => $port,
     as_admin_user  => $as_admin_user,
+    require        => Class['glassfish::service'],
   }
 }
