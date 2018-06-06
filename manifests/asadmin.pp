@@ -50,7 +50,7 @@ define glassfish::asadmin(
     owner        => 'root',
     group        => 'root',
     mode         => '0500',
-    # notify       => Exec["${as_root_path}/configs.sh"],
+    notify       => Exec["${as_root_path}/configs.sh"],
     validate_cmd => "${shell_path} -n %",
     content      => template("${module_name}/configs.erb");
   }
