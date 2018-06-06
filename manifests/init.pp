@@ -78,7 +78,7 @@ class glassfish(
     glassfish::asadmin { 'tunning':
       set            => $asadmin_set,
       create_managed => $asadmin_create_managed,
-      asadmin_path   => $asadmin_path,
+      asadmin_path   => "${asadmin_path}/asadmin",
       port           => $port,
       as_admin_user  => $as_admin_user,
     }
