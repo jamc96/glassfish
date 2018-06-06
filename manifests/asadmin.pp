@@ -54,10 +54,11 @@ define glassfish::asadmin(
     validate_cmd => "${shell_path} -n %",
     content      => template("${module_name}/configs.erb");
   }
-  # apply configuration
+  # apply configuration and the restart service
   exec { "${as_root_path}/configs.sh":
     command     => "sh ${as_root_path}/configs.sh",
     refreshonly => true,
     path        => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
+    notify      => Service['glassfish'],
   }
 }

@@ -74,15 +74,11 @@ class glassfish(
   ~> Class['::glassfish::service']
 
   # apply tunning on glassfish 
-  if $asadmin_set or $asadmin_create_managed {
-    glassfish::asadmin { 'tunning':
-      set            => $asadmin_set,
-      create_managed => $asadmin_create_managed,
-      asadmin_path   => "${asadmin_path}/asadmin",
-      port           => $port,
-      as_admin_user  => $as_admin_user,
-    }
-    # restart service after apply configurations
-    Glassfish::Asadmin['tunning'] ~> Class['::glassfish::service']
+  glassfish::asadmin { 'tunning':
+    set            => $asadmin_set,
+    create_managed => $asadmin_create_managed,
+    asadmin_path   => "${asadmin_path}/asadmin",
+    port           => $port,
+    as_admin_user  => $as_admin_user,
   }
 }
