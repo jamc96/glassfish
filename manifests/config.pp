@@ -20,6 +20,8 @@ class glassfish::config(
   $as_admin_password        = $::glassfish::as_admin_password,
   $as_admin_master_password = $::glassfish::as_admin_master_password,
   $service_name             = $::glassfish::service_name,
+  $port                     = $::glassfish::port,
+  $http_port                = $::glassfish::http_port,
 ) {
   # archive module
   include ::archive
@@ -88,6 +90,27 @@ class glassfish::config(
   # change admin password
   exec { 'change_admin_password':
     command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass change-admin-password",
+    refreshonly => true,
+    notify      => Exec['enable_secure_admin'],
+  }
+  # enable secure admin and restart service
+  exec { 'enable_secure_admin':
+    command     => "${asadmin_path}/asadmin enable-secure-admin --passwordfile=${as_root_path}/.as_admin_pass",
+    refreshonly => true,
+    notify      => [Service['glassfish'],Exec['set_admin_listener_port']],
+  }
+  # set admin listener port 
+  $set  = "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass set"
+  $admin_listener_config = "configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.port=${port}"
+  exec { 'set_admin_listener_port':
+    command     => "${set} ${admin_listener_config}",
+    refreshonly => true,
+    notify      => Exec['set_http_port'],
+  }
+  # set http port
+  $http_port_config = "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port=${http_port}"
+  exec { 'set_http_port':
+    command     => "${set} ${http_port_config}",
     refreshonly => true,
     notify      => Service['glassfish'],
   }

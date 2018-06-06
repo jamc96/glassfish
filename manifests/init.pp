@@ -22,10 +22,8 @@ class glassfish(
   Optional[String] $service_name                     = 'glassfish',
   Optional[String] $domain                           = 'domain1',
   Pattern[/^[0-9]+$/] $port                          = '4848',
-  Pattern[/^[0-9]+$/] $https_port                    = '8181',
-  Pattern[/^[0-9]+$/] $http_port                     = '82020',
+  Pattern[/^[0-9]+$/] $http_port                     = '8080',
   Boolean $manage_user                               = true,
-  Boolean $manage_java                               = true,
   ) {
 # Global variables
   $use_version = $version ? {
