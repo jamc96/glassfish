@@ -82,11 +82,6 @@ class glassfish::config(
     refreshonly => true,
     notify      => Exec['start_glassfish_service'],
   }
-  # fake start of service
-  exec { 'start_glassfish_service':
-    command     => "/etc/init.d/${service_name}_${domain} start",
-    refreshonly => true,
-  }
   # change admin password
   exec { 'change_admin_password':
     command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass change-admin-password",
@@ -97,7 +92,7 @@ class glassfish::config(
   exec { 'enable_secure_admin':
     command     => "${asadmin_path}/asadmin enable-secure-admin --passwordfile=${as_root_path}/.as_admin_pass",
     refreshonly => true,
-    notify      => [Service['glassfish'],Exec['set_admin_listener_port']],
+    notify      => [Exec['restart_glassfish_service'],Exec['set_admin_listener_port']],
   }
   # set admin listener port 
   $set  = "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass set"
