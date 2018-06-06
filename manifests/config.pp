@@ -28,14 +28,14 @@ class glassfish::config(
   # manage glassfish user
   if $manage_user {
     group { 'glassfish':
-      gid => '20',
+      gid => '2100',
     }
     user { 'glassfish':
       ensure  => present,
       comment => 'Managed by Puppet',
       home    => '/home/glassfish',
-      uid     => '501',
-      gid     => '20',
+      uid     => '2100',
+      gid     => '2100',
       require => Group['glassfish'],
     }
   }
