@@ -25,7 +25,7 @@ class glassfish(
   Pattern[/^[0-9]+$/] $secure_port                   = '8181',
   Boolean $manage_user                               = true,
   ) {
-# Global variables
+  # default variables
   $use_version = $version ? {
     'latest' => '5.0',
     default  => $version,
@@ -67,6 +67,7 @@ class glassfish(
   # glassfish containment
   contain ::glassfish::config
   contain ::glassfish::service
-  # configuring glassfish
-  include ::glassfish::config
+  # glassfish relationship
+  Class['::glassfish::config']
+  ~> Class['::glassfish::service']
 }
