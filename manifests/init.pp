@@ -24,6 +24,7 @@ class glassfish(
   Pattern[/^[0-9]+$/] $port                 = '4848',
   Pattern[/^[0-9]+$/] $secure_port          = '8181',
   Boolean $manage_user                      = true,
+  Boolean $manage_java                      = true,
   Optional[Array] $asadmin_set              = undef,
   Optional[Array] $asadmin_create_managed   = undef,
   ) {
@@ -73,6 +74,14 @@ class glassfish(
       uid     => '2100',
       gid     => '2100',
       require => Group['glassfish'],
+    }
+  }
+  # manage java installation
+  if $manage_java {
+    java::oracle { 'jdk8' :
+      ensure  => 'present',
+      version => '8',
+      java_se => 'jdk',
     }
   }
   # glassfish containment
