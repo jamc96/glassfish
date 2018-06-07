@@ -1,6 +1,6 @@
-# configuration values 
+# test case 3
 # 
-# This test will be working with the defined type asadmin in order to create a shell script,
+# This case will test the defined type asadmin in order to create a shell script,
 # add owner, group and permissions. It also will check the sytax of the shell file and execute it. 
 #
 #

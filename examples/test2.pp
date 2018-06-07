@@ -44,4 +44,4 @@ class { '::glassfish':
   asadmin_set              => $configs,
 }
 # adding relationship between user and class
-Java::Oracle['jdk8'] -> Accounts::User['glassfish'] -> Class['glassfish']
+Java::Oracle['jdk8'] -> User['glassfish'] -> Class['glassfish']
