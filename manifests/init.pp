@@ -7,25 +7,25 @@
 # @example
 #   include glassfish
 class glassfish(
-  Pattern[/latest|^[.+_0-9:~-]+$/] $version          = '4.1',
-  Enum['present','absent'] $package_ensure           = 'present',
-  Enum['zip','tar'] $package_type                    = 'zip',
-  Optional[String] $package_name                     = undef,
-  Optional[String] $package_source                   = undef,
-  Enum['directory','absent'] $config_ensure          = 'directory',
-  Optional[String] $config_path                      = undef,
-  String $as_admin_user                              = 'admin',
-  String $as_admin_password                          = 'admin',
-  String $as_admin_master_password                   = 'changeit',
-  Optional[String] $as_root_path                     = undef,
-  Enum['running','stopped'] $service_ensure          = 'running',
-  Optional[String] $service_name                     = 'glassfish',
-  Optional[String] $domain                           = 'domain1',
-  Pattern[/^[0-9]+$/] $port                          = '4848',
-  Pattern[/^[0-9]+$/] $secure_port                   = '8181',
-  Boolean $manage_user                               = true,
-  Optional[Array] $asadmin_set                       = undef,
-  Optional[Array] $asadmin_create_managed            = undef,
+  Pattern[/latest|^[.+_0-9:~-]+$/] $version = '4.1',
+  Enum['present','absent'] $package_ensure  = 'present',
+  Enum['directory','absent'] $config_ensure = 'directory',
+  Enum['running','stopped'] $service_ensure = 'running',
+  String $package_type                      = 'zip',
+  Optional[String] $package_name            = undef,
+  Optional[String] $package_source          = undef,
+  Optional[String] $config_path             = undef,
+  String $as_admin_user                     = 'admin',
+  String $as_admin_password                 = 'admin',
+  String $as_admin_master_password          = 'changeit',
+  String $as_root_path                      = '/home/glassfish',
+  String $service_name                      = 'glassfish',
+  String $domain                            = 'domain1',
+  Pattern[/^[0-9]+$/] $port                 = '4848',
+  Pattern[/^[0-9]+$/] $secure_port          = '8181',
+  Boolean $manage_user                      = true,
+  Optional[Array] $asadmin_set              = undef,
+  Optional[Array] $asadmin_create_managed   = undef,
   ) {
   # default variables
   $use_version = $version ? {
@@ -48,10 +48,6 @@ class glassfish(
     undef   => "http://download.oracle.com/glassfish/${use_version}/release/${use_package_name}",
     default => $package_source,
   }
-  $use_as_root_path = $as_root_path ? {
-    undef   => '/home/glassfish',
-    default => $as_root_path,
-  }
   $config_v = regsubst($use_version,'^(\d+)(\.(\d+)\.(\d+)|\.(\d+))$','\1')
   $asadmin_path = "${use_config_path}/glassfish${config_v}/glassfish/bin"
 
@@ -65,7 +61,20 @@ class glassfish(
     command     => "/etc/init.d/${service_name}_${domain} restart",
     refreshonly => true,
   }
-
+  # manage glassfish user
+  if $manage_user {
+    group { 'glassfish':
+      gid => '2100',
+    }
+    user { 'glassfish':
+      ensure  => present,
+      comment => 'Managed by Puppet',
+      home    => '/home/glassfish',
+      uid     => '2100',
+      gid     => '2100',
+      require => Group['glassfish'],
+    }
+  }
   # glassfish containment
   contain ::glassfish::config
   contain ::glassfish::service

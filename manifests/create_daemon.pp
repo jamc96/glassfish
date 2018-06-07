@@ -7,10 +7,10 @@
 # @example
 #   glassfish::create_daemon { 'namevar': }
 define glassfish::create_daemon(
-  $service_name                  = $::glassfish::service_name,
-  $domain                        = $::glassfish::domain,
-  $port                          = $::glassfish::port,
-  Optional[String] $asadmin_path = $::glassfish::asadmin_path,
+  $service_name                  = 'glassfish',
+  $domain                        = 'domain1',
+  $port                          = '4848',
+  Optional[String] $asadmin_path = undef,
 ) {
   if !$asadmin_path {
     # requiring $asadmin_path variable

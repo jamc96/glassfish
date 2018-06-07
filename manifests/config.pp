@@ -7,13 +7,12 @@
 # @example
 #   include glassfish::config
 class glassfish::config(
+  $ensure                   = $::glassfish::config_ensure,
+  $path                     = $::glassfish::use_config_path,
   $package_ensure           = $::glassfish::package_ensure,
   $package_name             = $::glassfish::use_package_name,
   $package_source           = $::glassfish::use_package_source,
-  $config_ensure            = $::glassfish::config_ensure,
-  $config_path              = $::glassfish::use_config_path,
-  $as_root_path             = $::glassfish::use_as_root_path,
-  $manage_user              = $::glassfish::manage_user,
+  $as_root_path             = $::glassfish::as_root_path,
   $asadmin_path             = $::glassfish::asadmin_path,
   $domain                   = $::glassfish::domain,
   $as_admin_user            = $::glassfish::as_admin_user,
@@ -25,39 +24,27 @@ class glassfish::config(
 ) {
   # archive module
   include ::archive
-  # manage glassfish user
-  if $manage_user {
-    group { 'glassfish':
-      gid => '2100',
-    }
-    user { 'glassfish':
-      ensure  => present,
-      comment => 'Managed by Puppet',
-      home    => '/home/glassfish',
-      uid     => '2100',
-      gid     => '2100',
-      require => Group['glassfish'],
-    }
-  }
   # downloand and create config files
-  file { $config_path :
-    ensure  => $config_ensure,
-    path    => $config_path,
+  file { $path :
+    ensure  => $ensure,
+    path    => $path,
     require => User['glassfish'],
   }
+  # uncompress the glassfish package
   archive { $package_name:
     ensure       => $package_ensure,
     path         => "${as_root_path}/${package_name}",
     source       => $package_source,
     extract      => true,
-    extract_path => "${config_path}/",
+    extract_path => "${path}/",
     cleanup      => false,
-    require      => File[$config_path],
+    require      => File[$path],
   }
   # create init service file
   ::glassfish::create_daemon{ 'glassfish':
     asadmin_path => $asadmin_path,
     domain       => $domain,
+    port         => $port,
     require      => Archive[$package_name],
   }
   # master password files
@@ -75,7 +62,6 @@ class glassfish::config(
       content => template("${module_name}/as_admin_pass.erb"),
       require => Glassfish::Create_daemon['glassfish'];
   }
-  # set password on admin and asadmin user
   # change master password
   exec { 'change_master_password':
     command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_root_path}/.as_master_pass --savemasterpassword",
