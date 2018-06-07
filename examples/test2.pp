@@ -37,6 +37,7 @@ $configs = [
 class { '::glassfish':
   version                  => '5.0',
   manage_user              => false,
+  manage_java              => false,
   as_admin_master_password => 'Test01$1234',
   as_admin_password        => 'Test01$1234',
   port                     => '40575',
