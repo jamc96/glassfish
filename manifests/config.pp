@@ -40,6 +40,14 @@ class glassfish::config(
     cleanup      => false,
     require      => File[$path],
   }
+  # create symlink to bin folder 
+  if $path =~ '(\d+)[.]' {
+    file { "${as_root_path}/bin":
+      ensure  => 'link',
+      target  => "${path}/glassfish${1}/glassfish/bin",
+      require => Archive[$package_name],
+    }
+  }
   # create init service file
   ::glassfish::create_daemon{ 'glassfish':
     asadmin_path => $asadmin_path,
