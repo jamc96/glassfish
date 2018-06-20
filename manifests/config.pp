@@ -37,6 +37,7 @@ class glassfish::config(
     path    => $path,
     require => User['glassfish'],
   }
+  # validate glassfish version 
   if $path =~ '(\d+)[.]' {
     $path_bin = "${path}/glassfish${1}/bin"
     # uncompress the glassfish package
