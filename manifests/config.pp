@@ -37,25 +37,23 @@ class glassfish::config(
     path    => $path,
     require => User['glassfish'],
   }
-  # validate glassfish version 
+  # uncompress the glassfish package
+  archive { $package_name:
+    ensure       => $package_ensure,
+    path         => "${as_root_path}/${package_name}",
+    source       => $package_source,
+    extract      => true,
+    extract_path => "${path}/",
+    cleanup      => false,
+    user         => $owner,
+    group        => $group,
+    require      => File[$path],
+  }
   if $path =~ '(\d+)[.]' {
-    $path_bin = "${path}/glassfish${1}/bin"
-    # uncompress the glassfish package
-    archive { $package_name:
-      ensure       => $package_ensure,
-      path         => "${as_root_path}/${package_name}",
-      source       => $package_source,
-      extract      => true,
-      extract_path => $path,
-      cleanup      => true,
-      user         => $owner,
-      group        => $group,
-      require      => File[$path],
-    }
     # create symlink to bin folder 
     file { "${as_root_path}/bin":
       ensure  => 'link',
-      target  => $path_bin,
+      target  => "${path}/glassfish${1}/bin",
       require => Archive[$package_name],
     }
   }
