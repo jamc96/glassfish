@@ -40,10 +40,15 @@ class glassfish::config(
     extract      => true,
     extract_path => "${path}/",
     cleanup      => false,
-    user         => 'glassfish',
-    group        => 'glassfish',
     require      => File[$path],
   }
+  # glassfish file permissions 
+  exec { 'glassfish permissions':
+    commant  => "chown glassfish:glassish ${path}",
+    path     => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
+    suscribe => Archive[$package_name],
+  }
+  # validate glassfish version 
   if $path =~ '(\d+)[.]' {
     # create symlink to bin folder 
     file { "${as_root_path}/bin":
