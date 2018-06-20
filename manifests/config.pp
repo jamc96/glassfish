@@ -21,8 +21,6 @@ class glassfish::config(
   $service_name             = $::glassfish::service_name,
   $port                     = $::glassfish::port,
   $secure_port              = $::glassfish::secure_port,
-  $owner                    = $::glassfish::owner,
-  $group                    = $::glassfish::group,
 ) {
   # archive module
   include ::archive
@@ -30,8 +28,8 @@ class glassfish::config(
   file { $path :
     ensure  => $ensure,
     path    => $path,
-    owner   => $owner,
-    group   => $group,
+    owner   => 'glassfish',
+    group   => 'glassfish',
     require => User['glassfish'],
   }
   # uncompress the glassfish package
@@ -42,8 +40,8 @@ class glassfish::config(
     extract      => true,
     extract_path => "${path}/",
     cleanup      => false,
-    user         => $owner,
-    group        => $group,
+    user         => 'glassfish',
+    group        => 'glassfish',
     require      => File[$path],
   }
   if $path =~ '(\d+)[.]' {
