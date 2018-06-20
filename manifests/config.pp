@@ -44,7 +44,7 @@ class glassfish::config(
   }
   # glassfish file permissions 
   exec { 'glassfish permissions':
-    commant  => "chown glassfish:glassish ${path}",
+    command  => "chown glassfish:glassish ${path}",
     path     => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
     suscribe => Archive[$package_name],
   }

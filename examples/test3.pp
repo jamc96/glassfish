@@ -13,8 +13,8 @@ $configs = [
   'server.network-config.protocols.protocol.http-listener-2.http.max-post-size-bytes=10',
 ]
 $create_managed = [
-'thread-factory --description="Microarchitecture High Priority Managed Thread Factory" --threadpriority=6 concurrent/__Microarch/HighPriority',
-'thread-factory --description="Microarchitecture Low Priority Managed Thread Factory" --threadpriority=4 concurrent/__Microarch/LowPriority',
+'thread-factory --description="Microarchitecture High Priority Managed Thread Factory" --threadpriority=2',
+'thread-factory --description="Microarchitecture Low Priority Managed Thread Factory" --threadpriority=1',
 ]
 
 glassfish::asadmin { 'tunning':
