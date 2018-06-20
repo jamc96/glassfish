@@ -27,6 +27,8 @@ class glassfish(
   Boolean $manage_java                      = true,
   Optional[Array] $asadmin_set              = undef,
   Optional[Array] $asadmin_create_managed   = undef,
+  String $owner                             = 'glassfish',
+  String $group                             = 'glassfish',
   ) {
   # default variables
   $use_version = $version ? {

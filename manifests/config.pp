@@ -21,30 +21,41 @@ class glassfish::config(
   $service_name             = $::glassfish::service_name,
   $port                     = $::glassfish::port,
   $secure_port              = $::glassfish::secure_port,
+  $owner                    = $::glassfish::owner,
+  $group                    = $::glassfish::group,
 ) {
+  #default  values  
+  File {
+    owner => $owner,
+    group => $group,
+  }
   # archive module
   include ::archive
-  # downloand and create config files
+  # create config files
   file { $path :
     ensure  => $ensure,
     path    => $path,
     require => User['glassfish'],
   }
-  # uncompress the glassfish package
-  archive { $package_name:
-    ensure       => $package_ensure,
-    path         => "${as_root_path}/${package_name}",
-    source       => $package_source,
-    extract      => true,
-    extract_path => "${path}/",
-    cleanup      => false,
-    require      => File[$path],
-  }
-  # create symlink to bin folder 
   if $path =~ '(\d+)[.]' {
+    $path_bin = "${path}/glassfish${1}/bin"
+    # uncompress the glassfish package
+    archive { $package_name:
+      ensure       => $package_ensure,
+      path         => "${as_root_path}/${package_name}",
+      source       => $package_source,
+      extract      => true,
+      extract_path => $path,
+      creates      => $path_bin,
+      cleanup      => true,
+      user         => $owner,
+      group        => $group,
+      require      => File[$path],
+    }
+    # create symlink to bin folder 
     file { "${as_root_path}/bin":
       ensure  => 'link',
-      target  => "${path}/glassfish${1}/glassfish/bin",
+      target  => $path_bin,
       require => Archive[$package_name],
     }
   }
