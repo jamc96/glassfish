@@ -24,17 +24,14 @@ class glassfish::config(
   $owner                    = $::glassfish::owner,
   $group                    = $::glassfish::group,
 ) {
-  #default  values  
-  File {
-    owner => $owner,
-    group => $group,
-  }
   # archive module
   include ::archive
   # create config files
   file { $path :
     ensure  => $ensure,
     path    => $path,
+    owner   => $owner,
+    group   => $group,
     require => User['glassfish'],
   }
   # uncompress the glassfish package
