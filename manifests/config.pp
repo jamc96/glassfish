@@ -40,13 +40,9 @@ class glassfish::config(
     extract      => true,
     extract_path => "${path}/",
     cleanup      => false,
+    user         => 'glassfish',
+    group        => 'glassfish',
     require      => File[$path],
-  }
-  # glassfish file permissions 
-  exec { 'glassfish permissions':
-    command   => "chown glassfish:glassfish ${path}",
-    path      => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
-    subscribe => Archive[$package_name],
   }
   # validate glassfish version 
   if $path =~ '(\d+)[.]' {
