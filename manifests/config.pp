@@ -47,7 +47,6 @@ class glassfish::config(
       source       => $package_source,
       extract      => true,
       extract_path => $path,
-      creates      => $path_bin,
       cleanup      => true,
       user         => $owner,
       group        => $group,
