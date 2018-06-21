@@ -53,6 +53,11 @@ class glassfish::config(
       target  => "${path}/glassfish${1}/bin",
       require => Archive[$package_name],
     }
+    # remove empty links on installation
+    file { '/usr/bin/asadmin':
+      ensure  => 'absent',
+      require => File["${as_root_path}/bin"],
+    }
   }
   # create init service file
   ::glassfish::create_daemon{ 'glassfish':
