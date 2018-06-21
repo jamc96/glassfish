@@ -26,11 +26,12 @@ class glassfish::config(
   include ::archive
   # create config files
   file { $path :
-    ensure  => $ensure,
-    path    => $path,
-    owner   => 'glassfish',
-    group   => 'glassfish',
-    require => User['glassfish'],
+    ensure                  => $ensure,
+    path                    => $path,
+    owner                   => 'glassfish',
+    group                   => 'glassfish',
+    selinux_ignore_defaults => true,
+    require                 => User['glassfish'],
   }
   # uncompress the glassfish package
   archive { $package_name:
