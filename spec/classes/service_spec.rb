@@ -6,6 +6,13 @@ describe 'glassfish::service' do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
+      it {
+        is_expected.to contain_service('glassfish').with(
+          'name'      => 'glassfish',
+          'ensure'    => 'running',
+          'enable'    => 'true',
+        )
+      }
     end
   end
 end
