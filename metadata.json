@@ -9,11 +9,11 @@
   "issues_url": "https://github.com/jamc96/glassfish/issues",
   "dependencies": [
     {
-      "name": "puppet/archive",
+      "name": "puppetlabs/archive",
       "version_requirement": ">= 1.1.0 < 4.0.0"
     },
     {
-      "name": "puppet/java",
+      "name": "puppetlabs/java",
       "version_requirement": ">= 1.1.0 < 3.0.0"
     }
   ],

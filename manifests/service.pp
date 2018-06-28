@@ -8,12 +8,13 @@
 #   include glassfish::service
 class glassfish::service(
   $service_name   = 'glassfish',
+  $service_ensure = 'running',
   $domain         = 'domain1',
   $port           = '4848',
 ){
   # create service glassfish
   service { 'glassfish':
-    ensure  => 'running',
+    ensure  => $service_ensure,
     name    => "${service_name}_${domain}",
     start   => "/etc/init.d/${service_name}_${domain} start",
     stop    => "/etc/init.d/${service_name}_${domain} stop",
