@@ -7,13 +7,14 @@ describe 'glassfish::service' do
 
       # default compilation without dependency cicle
       it { is_expected.to compile }
+      it { is_expected.to compile.with_all_deps }
       # ensure service running
       it { is_expected.to contain_service('glassfish').with(
-        :ensure  => 'running',
-        :name    => 'glassfish_domain1',
-        :start   => '/etc/init.d/glassfish_domain1 start',
-        :stop    => '/etc/init.d/glassfish_domain1 stop',
-        :restart => '/etc/init.d/glassfish_domain1 restart',
+          :ensure  => 'running',
+          :name    => 'glassfish_domain1',
+          :start   => '/etc/init.d/glassfish_domain1 start',
+          :stop    => '/etc/init.d/glassfish_domain1 stop',
+          :restart => '/etc/init.d/glassfish_domain1 restart',
         )
       }
     end
