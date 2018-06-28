@@ -13,7 +13,8 @@ describe 'glassfish::service' do
         :name    => 'glassfish_domain1',
         :start   => '/etc/init.d/glassfish_domain1 start',
         :stop    => '/etc/init.d/glassfish_domain1 stop',
-        :restart => '/etc/init.d/glassfish_domain1 restart')
+        :restart => '/etc/init.d/glassfish_domain1 restart',
+        )
       }
     end
   end
