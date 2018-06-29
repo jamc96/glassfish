@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe 'glassfish::config' do
-  on_supported_os.each do |os, os_facts|
-    context "on #{os}" do
-      let(:facts) { os_facts }
-
-      it { is_expected.to compile }
-    end
+  
+  context "on RedHat" do
+    let(:facts) { { :os => { 'family' => 'RedHat', 'name' => 'CentOS', 'architecture' => 'x86_64'}, :kernel => 'Linux',} }
+    
+    it { is_expected.to compile }
+    it { is_expected.to compile.with_all_deps }
   end
 end

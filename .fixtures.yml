@@ -2,8 +2,12 @@
 # See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
 ---
 fixtures:
+  symlinks:
+    glassfish: "#{source_dir}"
   forge_modules:
     stdlib:
       repo: "puppetlabs/stdlib"
     java:
       repo: "puppetlabs/java"
+    archive:
+      repo: "puppet/archive"

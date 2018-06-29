@@ -6,28 +6,19 @@
 #
 # @example
 #   include glassfish::config
-class glassfish::config(
-  $ensure                   = $::glassfish::config_ensure,
-  $path                     = $::glassfish::use_config_path,
-  $package_ensure           = $::glassfish::package_ensure,
-  $package_name             = $::glassfish::use_package_name,
-  $package_source           = $::glassfish::use_package_source,
-  $as_root_path             = $::glassfish::as_root_path,
-  $asadmin_path             = $::glassfish::asadmin_path,
-  $domain                   = $::glassfish::domain,
-  $as_admin_user            = $::glassfish::as_admin_user,
-  $as_admin_password        = $::glassfish::as_admin_password,
-  $as_admin_master_password = $::glassfish::as_admin_master_password,
-  $service_name             = $::glassfish::service_name,
-  $port                     = $::glassfish::port,
-  $secure_port              = $::glassfish::secure_port,
-) {
+class glassfish::config inherits glassfish {
+  # default variables 
+  $path          = $::glassfish::use_config_path
+  $package_name  = $::glassfish::use_package_name
+  $as_root_path  = $::glassfish::as_root_path
+  $asadmin_path  = $::glassfish::asadmin_path
+  $as_admin_user = $::glassfish::as_admin_user
+  $secure_port   = $glassfish::secure_port
   # archive module
   include ::archive
   # create config files
   file { $path :
-    ensure                  => $ensure,
-    path                    => $path,
+    ensure                  => $glassfish::config_ensure,
     owner                   => 'glassfish',
     group                   => 'glassfish',
     selinux_ignore_defaults => true,
@@ -35,9 +26,9 @@ class glassfish::config(
   }
   # uncompress the glassfish package
   archive { $package_name:
-    ensure       => $package_ensure,
+    ensure       => $glassfish::package_ensure,
     path         => "${as_root_path}/${package_name}",
-    source       => $package_source,
+    source       => $glassfish::use_package_source,
     extract      => true,
     extract_path => "${path}/",
     cleanup      => false,
@@ -62,8 +53,8 @@ class glassfish::config(
   # create init service file
   ::glassfish::create_daemon{ 'glassfish':
     asadmin_path => $asadmin_path,
-    domain       => $domain,
-    port         => $port,
+    domain       => $glassfish::domain,
+    port         => $glassfish::port,
     require      => Archive[$package_name],
   }
   # master password files
@@ -101,9 +92,9 @@ class glassfish::config(
   }
   # set admin listener port 
   $set  = "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass set"
-  $admin_listener_config = "configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.port=${port}"
+  $adm_list_config = "configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.port=${glassfish::port}"
   exec { 'set_admin_listener_port':
-    command     => "${set} ${admin_listener_config}",
+    command     => "${set} ${adm_list_config}",
     refreshonly => true,
     notify      => Exec['set_secure_port'],
   }
@@ -123,7 +114,7 @@ class glassfish::config(
   }
   # fake refresh of service
   exec { 'refresh_glassfish_service':
-    command     => "/etc/init.d/${service_name}_${domain} start",
+    command     => "/etc/init.d/glassfish_${glassfish::domain} start",
     refreshonly => true,
   }
 }
