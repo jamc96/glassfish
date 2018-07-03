@@ -19,7 +19,6 @@ class glassfish(
   String $as_admin_password                 = 'admin',
   String $as_admin_master_password          = 'changeit',
   String $as_root_path                      = '/home/glassfish',
-  String $service_name                      = 'glassfish',
   String $domain                            = 'domain1',
   Pattern[/^[0-9]+$/] $port                 = '4848',
   Pattern[/^[0-9]+$/] $secure_port          = '8181',
@@ -54,12 +53,12 @@ class glassfish(
 
   # fake start of service
   exec { 'start_glassfish_service':
-    command     => "/etc/init.d/${service_name}_${domain} start",
+    command     => '/etc/init.d/glassfish_domain1 start',
     refreshonly => true,
   }
   # fake restart of service
   exec { 'restart_glassfish_service':
-    command     => "/etc/init.d/${service_name}_${domain} restart",
+    command     => '/etc/init.d/glassfish_domain1 restart',
     refreshonly => true,
   }
   # manage glassfish user
