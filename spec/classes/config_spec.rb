@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'glassfish::config' do
   let(:facts) { { os: { 'family' => 'RedHat', 'name' => 'CentOS', 'architecture' => 'x86_64' }, kernel: 'Linux' } }
 
-  on_supported_os.each do |os, _os_facts|
+  on_supported_os.each_key do |os|
     context "on #{os}" do
       # check compilation
       it { is_expected.to compile }
@@ -35,7 +35,7 @@ describe 'glassfish::config' do
       it { is_expected.to contain_exec('stop_java').that_notifies('Exec[refresh_glassfish_service]') }
     end
   end
-  context 'default password files' do
+  context 'with default password files' do
     it {
       is_expected.to contain_file('/home/glassfish/.as_master_pass') \
         .with_content(%r{^AS_ADMIN_NEWMASTERPASSWORD=changeit})

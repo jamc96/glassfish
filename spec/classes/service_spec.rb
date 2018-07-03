@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'glassfish::service' do
-  on_supported_os.each do |os, _os_facts|
+  on_supported_os.each_key do |os|
     context "on #{os}" do
       let(:facts) { { os: { 'family' => 'RedHat', 'name' => 'CentOS', 'architecture' => 'x86_64' }, kernel: 'Linux' } }
 

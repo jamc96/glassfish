@@ -109,7 +109,7 @@ describe 'glassfish' do
       )
     }
   end
-  context 'with different admin/master password' do
+  context 'with different admin and master password' do
     let(:params) { { 'as_admin_master_password' => 'admin1234', 'as_admin_password' => 'changeit1234' } }
 
     it {
@@ -121,7 +121,7 @@ describe 'glassfish' do
         .with_content(%r{^AS_ADMIN_PASSWORD=changeit1234})
     }
   end
-  context 'with service_ensure => stopped' do
+  context 'when service_ensure => stopped' do
     let(:params) { { 'service_ensure' => 'stopped' } }
 
     it {
@@ -134,7 +134,7 @@ describe 'glassfish' do
       )
     }
   end
-  context 'whith version => latest' do
+  context 'when version => latest' do
     let(:params) { { 'version' => 'latest' } }
 
     # root directory
