@@ -7,17 +7,11 @@
 # @example
 #   include glassfish::config
 class glassfish::config inherits glassfish {
-  # default variables 
-  $path          = $::glassfish::use_config_path
-  $package_name  = $::glassfish::use_package_name
-  $as_root_path  = $::glassfish::as_root_path
-  $asadmin_path  = $::glassfish::asadmin_path
-  $as_admin_user = $::glassfish::as_admin_user
-  $secure_port   = $glassfish::secure_port
+
   # archive module
   include ::archive
   # create config files
-  file { $path :
+  file { $glassfish::use_config_path :
     ensure                  => $glassfish::config_ensure,
     owner                   => 'glassfish',
     group                   => 'glassfish',
@@ -25,47 +19,47 @@ class glassfish::config inherits glassfish {
     require                 => User['glassfish'],
   }
   # uncompress the glassfish package
-  archive { $package_name:
+  archive { $glassfish::use_package_name:
     ensure       => $glassfish::package_ensure,
-    path         => "${as_root_path}/${package_name}",
+    path         => "${glassfish::as_root_path}/${glassfish::use_package_name}",
     source       => $glassfish::use_package_source,
     extract      => true,
-    extract_path => "${path}/",
+    extract_path => "${glassfish::use_config_path}/",
     cleanup      => false,
     user         => 'glassfish',
     group        => 'glassfish',
-    require      => File[$path],
+    require      => File[$glassfish::use_config_path],
   }
   # validate glassfish version 
-  if $path =~ '(\d+)[.]' {
+  if $glassfish::use_config_path =~ '(\d+)[.]' {
     # create symlink to bin folder 
-    file { "${as_root_path}/bin":
+    file { "${glassfish::as_root_path}/bin":
       ensure  => 'link',
-      target  => "${path}/glassfish${1}/bin",
-      require => Archive[$package_name],
+      target  => "${glassfish::use_config_path}/glassfish${1}/bin",
+      require => Archive[$glassfish::use_package_name],
     }
     # remove empty links on installation
     file { '/usr/bin/asadmin':
       ensure  => 'absent',
-      require => File["${as_root_path}/bin"],
+      require => File["${glassfish::as_root_path}/bin"],
     }
   }
   # create init service file
   ::glassfish::create_daemon{ 'glassfish':
-    asadmin_path => $asadmin_path,
+    asadmin_path => $glassfish::asadmin_path,
     domain       => $glassfish::domain,
     port         => $glassfish::port,
-    require      => Archive[$package_name],
+    require      => Archive[$glassfish::use_package_name],
   }
   # master password files
   file {
-    "${as_root_path}/.as_master_pass":
+    "${glassfish::as_root_path}/.as_master_pass":
       ensure  => 'file',
       mode    => '0644',
       notify  => Exec['change_master_password'],
       content => template("${module_name}/as_master_pass.erb"),
       require => Glassfish::Create_daemon['glassfish'];
-    "${as_root_path}/.as_admin_pass":
+    "${glassfish::as_root_path}/.as_admin_pass":
       ensure  => 'file',
       mode    => '0644',
       notify  => Exec['change_admin_password'],
@@ -74,24 +68,24 @@ class glassfish::config inherits glassfish {
   }
   # change master password
   exec { 'change_master_password':
-    command     => "${asadmin_path}/asadmin change-master-password --passwordfile=${as_root_path}/.as_master_pass --savemasterpassword",
+    command     => "${glassfish::asadmin_path}/asadmin change-master-password --passwordfile=${glassfish::as_root_path}/.as_master_pass --savemasterpassword",
     refreshonly => true,
     notify      => Exec['start_glassfish_service'],
   }
   # change admin password
   exec { 'change_admin_password':
-    command     => "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass change-admin-password",
+    command     => "${glassfish::asadmin_path}/asadmin --user ${glassfish::as_admin_user} --passwordfile=${glassfish::as_root_path}/.as_admin_pass change-admin-password",
     refreshonly => true,
     notify      => Exec['enable_secure_admin'],
   }
   # enable secure admin and restart service
   exec { 'enable_secure_admin':
-    command     => "${asadmin_path}/asadmin enable-secure-admin --passwordfile=${as_root_path}/.as_admin_pass",
+    command     => "${glassfish::asadmin_path}/asadmin enable-secure-admin --passwordfile=${glassfish::as_root_path}/.as_admin_pass",
     refreshonly => true,
     notify      => [Exec['restart_glassfish_service'],Exec['set_admin_listener_port']],
   }
   # set admin listener port 
-  $set  = "${asadmin_path}/asadmin --user ${as_admin_user} --passwordfile=${as_root_path}/.as_admin_pass set"
+  $set  = "${glassfish::asadmin_path}/asadmin --user ${glassfish::as_admin_user} --passwordfile=${glassfish::as_root_path}/.as_admin_pass set"
   $adm_list_config = "configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.port=${glassfish::port}"
   exec { 'set_admin_listener_port':
     command     => "${set} ${adm_list_config}",
@@ -99,7 +93,7 @@ class glassfish::config inherits glassfish {
     notify      => Exec['set_secure_port'],
   }
   # set http port
-  $secure_port_config = "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port=${secure_port}"
+  $secure_port_config = "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port=${glassfish::secure_port}"
   exec { 'set_secure_port':
     command     => "${set} ${secure_port_config}",
     refreshonly => true,

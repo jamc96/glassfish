@@ -1,4 +1,6 @@
 source ENV['GEM_SOURCE'] || 'https://rubygems.org'
+gem 'rspec-puppet'
+gem 'puppetlabs_spec_helper'
 
 def location_for(place_or_version, fake_version = nil)
   if place_or_version =~ %r{\A(git[:@][^#]*)#(.*)}
