@@ -11,6 +11,7 @@ class glassfish(
   Enum['present','absent'] $package_ensure  = 'present',
   Enum['directory','absent'] $config_ensure = 'directory',
   Enum['running','stopped'] $service_ensure = 'running',
+  Boolean $manage_service                   = true,
   String $package_type                      = 'zip',
   Optional[String] $package_name            = undef,
   Optional[String] $package_source          = undef,

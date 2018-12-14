@@ -7,12 +7,15 @@
 # @example
 #   include glassfish::service
 class glassfish::service inherits glassfish {
-  # create service glassfish
-  service { 'glassfish':
-    ensure  => $::glassfish::service_ensure,
-    name    => 'glassfish_domain1',
-    start   => '/etc/init.d/glassfish_domain1 start',
-    stop    => '/etc/init.d/glassfish_domain1 stop',
-    restart => '/etc/init.d/glassfish_domain1 restart',
+  # validate if service daemon is required
+  if $::glassfish::manage_service {
+    # create service glassfish
+    service { 'glassfish':
+      ensure  => $::glassfish::service_ensure,
+      name    => 'glassfish_domain1',
+      start   => '/etc/init.d/glassfish_domain1 start',
+      stop    => '/etc/init.d/glassfish_domain1 stop',
+      restart => '/etc/init.d/glassfish_domain1 restart',
+    }
   }
 }
